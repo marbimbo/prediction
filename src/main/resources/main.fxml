@@ -41,9 +41,9 @@
                     </font>
                 </Label>
                 <Label text="Od:" GridPane.rowIndex="1" />
-                <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <DatePicker fx:id="picker_from" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <Label text="Do:" GridPane.rowIndex="2" />
-                <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <DatePicker fx:id="picker_to" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <Label alignment="CENTER" text="Predykcja" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                     <font>
                         <Font size="15.0" />

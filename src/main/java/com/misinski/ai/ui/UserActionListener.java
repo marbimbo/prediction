@@ -1,7 +1,12 @@
 package com.misinski.ai.ui;
 
+import java.time.LocalDate;
+
 public interface UserActionListener {
 
-    void onUserAction(String value);
+    void onPredictionValueChange(String value);
 
+    void onDateFromChange(LocalDate value);
+
+    void onDateToChange(LocalDate value);
 }

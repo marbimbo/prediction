@@ -9,9 +9,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Separator;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -24,6 +26,12 @@ public class UIController implements Initializable {
     private UserActionListener mListener;
 
     @FXML
+    private DatePicker picker_from;
+
+    @FXML
+    private DatePicker picker_to;
+
+    @FXML
     private ChoiceBox prediction_choice;
 
     @FXML
@@ -34,6 +42,7 @@ public class UIController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeSeries();
         updateChart();
+
         prediction_choice.setItems(FXCollections.observableArrayList(
                 "Brak",
                 new Separator(),
@@ -43,7 +52,7 @@ public class UIController implements Initializable {
         prediction_choice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldIndex, Number newIndex) {
-                mListener.onUserAction((String) prediction_choice.getItems().get((Integer) newIndex));
+                mListener.onPredictionValueChange((String) prediction_choice.getItems().get((Integer) newIndex));
             }
         });
     }
@@ -103,7 +112,33 @@ public class UIController implements Initializable {
         }
     }
 
-    void addListener(UserActionListener listener) {
+    void setCallBack() {
+        picker_from.valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
+                System.out.println(picker_from.getValue());
+                mListener.onDateFromChange(picker_from.getValue());
+            }
+        });
+
+        picker_to.valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
+                System.out.println(picker_to.getValue());
+                mListener.onDateToChange(picker_to.getValue());
+            }
+        });
+    }
+
+    void setListener(UserActionListener listener) {
         mListener = listener;
+    }
+
+    public void setDateFrom(LocalDate dateFrom) {
+        picker_from.setValue(dateFrom);
+    }
+
+    public void setDateTo(LocalDate dateTo) {
+        picker_to.setValue(dateTo);
     }
 }

@@ -14,6 +14,7 @@ import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 import org.joda.time.DateTime;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,11 +22,15 @@ import java.util.Map;
 
 public class RoboApplication extends Application implements UserActionListener {
 
+    private static final int ONE_YEAR = 1;
+
     private PostgreSQLJDBC mJdbc;
     private PredictionFitter mFitter;
     private UIController mController;
     private ArrayList<ObservableList<XYChart.Data<Date, Number>>> mActualList = new ArrayList<>();
     private ArrayList<ObservableList<XYChart.Data<Date, Number>>> mPredictedList = new ArrayList<>();
+    private LocalDate mDateFrom = LocalDate.now().minusYears(ONE_YEAR);
+    private LocalDate mDateTo = LocalDate.now();
 
     public static void main(final String[] arguments) {
         launch(arguments);
@@ -39,7 +44,7 @@ public class RoboApplication extends Application implements UserActionListener {
         NBPFileSniffer sniffer = new NBPFileSniffer(mJdbc);
         sniffer.sniffForFiles();
 
-        mJdbc.produceArray();
+        mJdbc.produceArray(mDateFrom, mDateTo);
 
         mFitter = new PredictionFitter();
 
@@ -61,7 +66,7 @@ public class RoboApplication extends Application implements UserActionListener {
         FXMLLoader loader = new FXMLLoader();
         Parent root = loader.load(getClass().getClassLoader().getResource("main.fxml").openStream());
         mController = loader.getController();
-        mController.addListener(this);
+        mController.setListener(this);
 
         primaryStage.setScene(new Scene(root));
 
@@ -71,6 +76,11 @@ public class RoboApplication extends Application implements UserActionListener {
 
         mController.setActualData(mActualList);
         mController.setPredictedData(mPredictedList);
+
+        mController.setDateFrom(mDateFrom);
+        mController.setDateTo(mDateTo);
+
+        mController.setCallBack();
 
         recalculatePrediction("Brak");
 
@@ -109,9 +119,33 @@ public class RoboApplication extends Application implements UserActionListener {
     }
 
     @Override
-    public void onUserAction(String value) {
-        System.out.println("onUserAction");
+    public void onPredictionValueChange(String value) {
+        System.out.println("onPredictionValueChange");
         recalculatePrediction(value);
+    }
+
+    @Override
+    public void onDateFromChange(LocalDate value) {
+        System.out.println("onDateFromChange");
+        mDateFrom = value;
+        redrawActualValue();
+    }
+
+    @Override
+    public void onDateToChange(LocalDate value) {
+        System.out.println("onDateToChange");
+        mDateTo = value;
+        redrawActualValue();
+    }
+
+    private void redrawActualValue() {
+        mJdbc.produceArray(mDateFrom, mDateTo);
+        mActualList.get(0).clear();
+        mActualList.get(1).clear();
+        mActualList.get(2).clear();
+        mActualList.get(3).clear();
+        mActualList.get(4).clear();
+        mJdbc.getArrayOfCharts().forEach(this::drawSeries);
     }
 
     private void recalculatePrediction(String value) {
@@ -159,7 +193,8 @@ public class RoboApplication extends Application implements UserActionListener {
                 futureDate = dtPlusOne.toDate();
             }
 
-            mPredictedList.get(arrayIndex).setAll(tempList);
+            mPredictedList.get(arrayIndex).clear();
+            mPredictedList.get(arrayIndex).addAll(tempList);
         }
     }
 }

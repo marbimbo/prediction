@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,13 +113,14 @@ public class PostgreSQLJDBC {
         return arrayOfCharts;
     }
 
-    private ArrayList<NbpRow> produceArrayFromDB() {
+    private ArrayList<NbpRow> produceArrayFromDB(LocalDate mDateFrom, LocalDate mDateTo) {
         ArrayList<NbpRow> dbList = new ArrayList<>();
         PreparedStatement ps = null;
-//        Connection con = null;
-        String SQL = "SELECT * FROM prediction ORDER BY effective_date";
+        String SQL = "SELECT * FROM prediction " +
+                "WHERE (effective_date BETWEEN '" + mDateFrom.toString() + "' AND '" + mDateTo.toString() + "')" +
+                "ORDER BY effective_date";
         try {
-//            con = DriverManager.getConnection();
+            conn = DriverManager.getConnection(dbUrl + dbName, pgUser, pgPassword);
             ps = conn.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
             NbpRow p = null;
@@ -157,7 +159,7 @@ public class PostgreSQLJDBC {
         }
     }
 
-    public void produceArray() {
-        arrayOfCharts = produceArrayFromDB();
+    public void produceArray(LocalDate mDateFrom, LocalDate mDateTo) {
+        arrayOfCharts = produceArrayFromDB(mDateFrom, mDateTo);
     }
 }
