@@ -3,6 +3,7 @@
 <?import com.misinski.ai.ui.DateAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -10,40 +11,45 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0"
-          stylesheets="@exchange_style.css" xmlns="http://javafx.com/javafx/8.0.121"
-          fx:controller="com.misinski.ai.ui.UIController">
+<GridPane alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@exchange_style.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.misinski.ai.ui.UIController">
     <children>
-        <LineChart fx:id="exchange_chart" layoutX="110.0" layoutY="270.0" legendSide="RIGHT" prefHeight="673.0"
-                   prefWidth="1400.0" title="Kursy walut NBP" GridPane.columnIndex="8" GridPane.rowIndex="1">
+        <LineChart fx:id="exchange_chart" layoutX="110.0" layoutY="270.0" legendSide="RIGHT" prefHeight="720.0" prefWidth="1500.0" title="Kursy walut NBP" GridPane.columnIndex="8" GridPane.rowIndex="1">
             <xAxis>
-                <DateAxis label="Data" side="BOTTOM"/>
+                <DateAxis label="Data" side="BOTTOM" />
             </xAxis>
             <yAxis>
-                <NumberAxis label="x/PLN" side="LEFT"/>
+                <NumberAxis label="x/PLN" side="LEFT" />
             </yAxis>
         </LineChart>
         <GridPane GridPane.rowIndex="1">
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="51.0"/>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="149.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="51.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="149.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="40" minHeight="10" prefHeight="40" vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="40" minHeight="10" prefHeight="40" vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="40" minHeight="10" prefHeight="40" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                <Label text="Od:" GridPane.rowIndex="1"/>
-                <Label text="Do:" GridPane.rowIndex="2"/>
-                <Label alignment="CENTER" contentDisplay="CENTER" text="Wyświetl" GridPane.columnIndex="0"
-                       GridPane.columnSpan="2" GridPane.halignment="CENTER">
+                <Label alignment="CENTER" text="Wyświetl" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                     <font>
-                        <Font size="15.0"/>
+                        <Font size="15.0" />
                     </font>
                 </Label>
+                <Label text="Od:" GridPane.rowIndex="1" />
+                <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="Do:" GridPane.rowIndex="2" />
+                <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label alignment="CENTER" text="Predykcja" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Label>
+            <ChoiceBox fx:id="prediction_choice" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             </children>
         </GridPane>
     </children>
