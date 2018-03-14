@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.misinski.ai.ui.DateAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.misinski.ai.ui.UIController">
+   <children>
+      <LineChart fx:id="exchange_chart" layoutX="382.0" layoutY="270.0" legendSide="RIGHT" prefHeight="508.0" prefWidth="1214.0" title="Kursy walut NBP">
+        <xAxis>
+          <DateAxis label="Data" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis label="x/PLN" side="LEFT" />
+        </yAxis>
+      </LineChart>
+   </children>
+</AnchorPane>

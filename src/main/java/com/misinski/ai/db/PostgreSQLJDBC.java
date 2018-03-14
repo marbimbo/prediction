@@ -109,8 +109,6 @@ public class PostgreSQLJDBC {
     }
 
     public ArrayList<NbpRow> getArrayOfCharts() {
-        arrayOfCharts = produceArrayFromDB();
-
         return arrayOfCharts;
     }
 
@@ -157,5 +155,9 @@ public class PostgreSQLJDBC {
                 }
             }
         }
+    }
+
+    public void produceArray() {
+        arrayOfCharts = produceArrayFromDB();
     }
 }

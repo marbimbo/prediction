@@ -1,2 +1,5 @@
 .idea
 prediction.iml
+src/main/java/META-INF/
+target
+out
