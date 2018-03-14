@@ -18,7 +18,7 @@
                 <DateAxis label="Data" side="BOTTOM" />
             </xAxis>
             <yAxis>
-                <NumberAxis label="x/PLN" side="LEFT" />
+                <NumberAxis side="LEFT" />
             </yAxis>
         </LineChart>
         <GridPane GridPane.rowIndex="1">

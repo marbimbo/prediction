@@ -9,15 +9,16 @@ public class PredictionFitter {
     private final Fitter fit;
 
     public PredictionFitter() {
-        Function fun = new Function(){
+        Function fun = new Function() {
             @Override
             public double evaluate(double[] values, double[] parameters) {
                 double A = parameters[0];
                 double B = parameters[1];
                 double C = parameters[2];
                 double x = values[0];
-                return A*x*x + B*x + C;
+                return A * x * x + B * x + C;
             }
+
             @Override
             public int getNParameters() {
                 return 3;
@@ -36,12 +37,12 @@ public class PredictionFitter {
 
         // TODO: 14.03.18 better approach
         xs = new double[xs.length][1];
-        for(int i = 0; i < xs.length; ++i) {
+        for (int i = 0; i < xs.length; ++i) {
             xs[i][0] = i;
         }
 
         fit.setData(xs, zs);
-        fit.setParameters(new double[]{1,0,1});
+        fit.setParameters(new double[]{1, 0, 1});
 
         fit.fitData();
 

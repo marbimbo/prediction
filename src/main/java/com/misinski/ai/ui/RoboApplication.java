@@ -5,6 +5,8 @@ import com.misinski.ai.db.PostgreSQLJDBC;
 import com.misinski.ai.explorer.NBPFileSniffer;
 import com.misinski.ai.prediction.PredictionFitter;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,18 +19,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoboApplication extends Application {
+public class RoboApplication extends Application implements UserActionListener {
 
     private PostgreSQLJDBC mJdbc;
     private PredictionFitter mFitter;
-    private ArrayList<XYChart.Series> mSeriesList = new ArrayList<>();
     private UIController mController;
+    private ArrayList<ObservableList<XYChart.Data<Date, Number>>> mActualList = new ArrayList<>();
+    private ArrayList<ObservableList<XYChart.Data<Date, Number>>> mPredictedList = new ArrayList<>();
 
-    /**
-     * Main function that opens the "Hello World!" window
-     *
-     * @param args the command line arguments
-     */
     public static void main(final String[] arguments) {
         launch(arguments);
     }
@@ -45,27 +43,17 @@ public class RoboApplication extends Application {
 
         mFitter = new PredictionFitter();
 
-        //By default this does nothing, but it
-        //can carry out code to set up your app.
-        //It runs once before the start method,
-        //and after the constructor.
-
-
-        XYChart.Series series = new XYChart.Series();
-        series.setName("EUR");
-        mSeriesList.add(series);
-        series = new XYChart.Series();
-        series.setName("USD");
-        mSeriesList.add(series);
-        series = new XYChart.Series();
-        series.setName("GBP");
-        mSeriesList.add(series);
-        series = new XYChart.Series();
-        series.setName("CHF");
-        mSeriesList.add(series);
-        series = new XYChart.Series();
-        series.setName("AUD");
-        mSeriesList.add(series);
+        // initialize with empty lists
+        mActualList.add(FXCollections.observableArrayList());
+        mActualList.add(FXCollections.observableArrayList());
+        mActualList.add(FXCollections.observableArrayList());
+        mActualList.add(FXCollections.observableArrayList());
+        mActualList.add(FXCollections.observableArrayList());
+        mPredictedList.add(FXCollections.observableArrayList());
+        mPredictedList.add(FXCollections.observableArrayList());
+        mPredictedList.add(FXCollections.observableArrayList());
+        mPredictedList.add(FXCollections.observableArrayList());
+        mPredictedList.add(FXCollections.observableArrayList());
     }
 
     @Override
@@ -73,6 +61,7 @@ public class RoboApplication extends Application {
         FXMLLoader loader = new FXMLLoader();
         Parent root = loader.load(getClass().getClassLoader().getResource("main.fxml").openStream());
         mController = loader.getController();
+        mController.addListener(this);
 
         primaryStage.setScene(new Scene(root));
 
@@ -80,40 +69,10 @@ public class RoboApplication extends Application {
 
         mJdbc.getArrayOfCharts().forEach(this::drawSeries);
 
-        for (XYChart.Series<Date, Number> series : mSeriesList) {
-            mController.addSeries(series);
+        mController.setActualData(mActualList);
+        mController.setPredictedData(mPredictedList);
 
-            double[][] xArray = new double[mJdbc.getArrayOfCharts().size()][1];
-            double[] yArray = new double[mJdbc.getArrayOfCharts().size()];
-
-            int i = 0;
-            for (XYChart.Data<Date, Number> data : series.getData()) {
-                xArray[i][0] = data.getXValue().getTime();
-                yArray[i] = data.getYValue().doubleValue();
-                ++i;
-            }
-
-            double[] params = mFitter.getFunction(xArray, yArray);
-            for (int j = 0; j < params.length; ++j) {
-                System.out.println(params[j]);
-            }
-
-            XYChart.Series predictedSeries = new XYChart.Series();
-            predictedSeries.setName("PREDICTION");
-
-            java.util.Date lastDate = series.getData().get(series.getData().size() - 1).getXValue();
-            DateTime dtOrg = new DateTime(lastDate);
-            DateTime dtPlusOne = dtOrg.plusDays(1);
-            Date futureDate = dtPlusOne.toDate();
-
-            for (int k = series.getData().size(); k < series.getData().size() + 365; ++k) {
-                predictedSeries.getData().add(new XYChart.Data(futureDate, calculateYValue(k, params)));
-                dtPlusOne = dtPlusOne.plusDays(1);
-                futureDate = dtPlusOne.toDate();
-            }
-
-            mController.addSeries(predictedSeries);
-        }
+        recalculatePrediction("Brak");
 
         primaryStage.show();
     }
@@ -132,11 +91,11 @@ public class RoboApplication extends Application {
     }
 
     private void drawSeries(NbpRow nbpRow) {
-        mSeriesList.get(0).getData().add(new XYChart.Data(nbpRow.effectiveDate, nbpRow.eur));
-        mSeriesList.get(1).getData().add(new XYChart.Data(nbpRow.effectiveDate, nbpRow.usd));
-        mSeriesList.get(2).getData().add(new XYChart.Data(nbpRow.effectiveDate, nbpRow.gbp));
-        mSeriesList.get(3).getData().add(new XYChart.Data(nbpRow.effectiveDate, nbpRow.chf));
-        mSeriesList.get(4).getData().add(new XYChart.Data(nbpRow.effectiveDate, nbpRow.aud));
+        mActualList.get(0).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.eur));
+        mActualList.get(1).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.usd));
+        mActualList.get(2).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.gbp));
+        mActualList.get(3).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.chf));
+        mActualList.get(4).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.aud));
     }
 
     @Override
@@ -147,5 +106,60 @@ public class RoboApplication extends Application {
         //Use Platorm.exit() instead of System.exit(0).
         //is called. This is where you should offer to
         //save unsaved stuff the user has generated.
+    }
+
+    @Override
+    public void onUserAction(String value) {
+        System.out.println("onUserAction");
+        recalculatePrediction(value);
+    }
+
+    private void recalculatePrediction(String value) {
+        String newPrediction = value;
+        System.out.println(newPrediction);
+        int numberOfPredictedDays;
+
+        if (newPrediction.equals("Brak")) {
+            numberOfPredictedDays = 0;
+        } else if (newPrediction.equals("tydzień")) {
+            numberOfPredictedDays = 7;
+        } else if (newPrediction.equals("miesiąc")) {
+            numberOfPredictedDays = 30;
+        } else {
+            numberOfPredictedDays = 365;
+        }
+
+        for (int arrayIndex = 0; arrayIndex < mActualList.size(); ++arrayIndex) {
+            ArrayList<XYChart.Data<Date, Number>> tempList = new ArrayList<>();
+
+            double[][] xArray = new double[mJdbc.getArrayOfCharts().size()][1];
+            double[] yArray = new double[mJdbc.getArrayOfCharts().size()];
+
+            int i = 0;
+            for (XYChart.Data<Date, Number> data : mActualList.get(arrayIndex)) {
+                xArray[i][0] = data.getXValue().getTime();
+                yArray[i] = data.getYValue().doubleValue();
+                ++i;
+            }
+
+            double[] params = mFitter.getFunction(xArray, yArray);
+            for (int j = 0; j < params.length; ++j) {
+                System.out.println(params[j]);
+            }
+
+            Date lastDate = mActualList.get(arrayIndex).get(mActualList.get(arrayIndex).size() - 1).getXValue();
+
+            DateTime dtOrg = new DateTime(lastDate);
+            DateTime dtPlusOne = dtOrg.plusDays(1);
+            Date futureDate = dtPlusOne.toDate();
+
+            for (int k = mActualList.get(arrayIndex).size(); k < mActualList.get(arrayIndex).size() + numberOfPredictedDays; ++k) {
+                tempList.add(new XYChart.Data<>(futureDate, calculateYValue(k, params)));
+                dtPlusOne = dtPlusOne.plusDays(1);
+                futureDate = dtPlusOne.toDate();
+            }
+
+            mPredictedList.get(arrayIndex).setAll(tempList);
+        }
     }
 }
