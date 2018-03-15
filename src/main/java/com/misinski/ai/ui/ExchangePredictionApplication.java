@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoboApplication extends Application implements UserActionListener {
+public class ExchangePredictionApplication extends Application implements UserActionListener {
 
     private static final int ONE_YEAR = 1;
 
