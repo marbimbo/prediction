@@ -11,18 +11,20 @@ import java.util.logging.Logger;
 
 public class PostgreSQLJDBC {
 
-    private static final String dbUrl = "jdbc:postgresql://localhost:5432/";
-    private static final String dbName = "exchange";
-    private static final String pgUser = "postgres";
-    private static final String pgPassword = "postgres";
-    private Connection conn;
+    private static final String mDbUrl = "jdbc:postgresql://localhost:5432/";
+    private static final String mDbName = "exchange";
+    private static final String mPgUser = "postgres";
+    private static final String mPgPassword = "postgres";
+    private static final String mTableName = "prediction";
+
+    private Connection mConn;
     private ArrayList<NbpRow> arrayOfCharts;
 
     public PostgreSQLJDBC() {
         try {
             Class.forName("org.postgresql.Driver");
             // TODO: 10.03.18 if DB does not exist - create one
-            conn = DriverManager.getConnection(dbUrl + dbName, pgUser, pgPassword);
+            mConn = DriverManager.getConnection(mDbUrl + mDbName, mPgUser, mPgPassword);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -35,9 +37,9 @@ public class PostgreSQLJDBC {
     public void dropTable() {
         System.out.println("Drop table");
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = mConn.createStatement();
 
-            String sql = "DROP TABLE PREDICTION";
+            String sql = "DROP TABLE " + mTableName;
 
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
@@ -48,9 +50,9 @@ public class PostgreSQLJDBC {
     public void createTable() {
         System.out.println("Create table");
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = mConn.createStatement();
 
-            String sql = "CREATE TABLE PREDICTION " +
+            String sql = "CREATE TABLE " + mTableName + " " +
                     "(id CHAR(14) not NULL, " +
                     " effective_date DATE, " +
                     " eur FLOAT, " +
@@ -70,9 +72,9 @@ public class PostgreSQLJDBC {
 
         JSONArray currencyArray = table.getJSONArray("rates");
 
-        String sql = "INSERT INTO prediction VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + mTableName + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        PreparedStatement statement = conn.prepareStatement(sql);
+        PreparedStatement statement = mConn.prepareStatement(sql);
 
         statement.setString(1, table.getString("no"));
         statement.setDate(2, Date.valueOf(table.getString("effectiveDate")));
@@ -116,12 +118,12 @@ public class PostgreSQLJDBC {
     private ArrayList<NbpRow> produceArrayFromDB(LocalDate mDateFrom, LocalDate mDateTo) {
         ArrayList<NbpRow> dbList = new ArrayList<>();
         PreparedStatement ps = null;
-        String SQL = "SELECT * FROM prediction " +
+        String SQL = "SELECT * FROM " + mTableName + " " +
                 "WHERE (effective_date BETWEEN '" + mDateFrom.toString() + "' AND '" + mDateTo.toString() + "')" +
                 "ORDER BY effective_date";
         try {
-            conn = DriverManager.getConnection(dbUrl + dbName, pgUser, pgPassword);
-            ps = conn.prepareStatement(SQL);
+            mConn = DriverManager.getConnection(mDbUrl + mDbName, mPgUser, mPgPassword);
+            ps = mConn.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
             NbpRow p = null;
             while (rs.next()) {
@@ -142,13 +144,6 @@ public class PostgreSQLJDBC {
             Logger.getLogger(PostgreSQLJDBC.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(PostgreSQLJDBC.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
             if (ps != null) {
                 try {
                     ps.close();
@@ -161,5 +156,16 @@ public class PostgreSQLJDBC {
 
     public void produceArray(LocalDate mDateFrom, LocalDate mDateTo) {
         arrayOfCharts = produceArrayFromDB(mDateFrom, mDateTo);
+    }
+
+    public void close() {
+        Logger.getLogger(PostgreSQLJDBC.class.getName()).log(Level.INFO, "closing...");
+        if (mConn != null) {
+            try {
+                mConn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(PostgreSQLJDBC.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

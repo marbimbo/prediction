@@ -116,12 +116,7 @@ public class RoboApplication extends Application implements UserActionListener {
 
     @Override
     public void stop() {
-        //By default this does nothing
-        //It runs if the user clicks the go-away button
-        //closing the window or if Platorm.exit() is called.
-        //Use Platorm.exit() instead of System.exit(0).
-        //is called. This is where you should offer to
-        //save unsaved stuff the user has generated.
+        mJdbc.close();
     }
 
     @Override
