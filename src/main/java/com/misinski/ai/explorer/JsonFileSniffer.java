@@ -2,6 +2,7 @@ package com.misinski.ai.explorer;
 
 import com.misinski.ai.db.PostgreSQLJDBC;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,17 +12,18 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
-public class NBPFileSniffer {
+import static com.misinski.ai.http.JsonDownloader.DIR_PATH;
 
-    private final String dirPath = "nbp/a/";
+public class JsonFileSniffer {
+
     private PostgreSQLJDBC mJdbc;
 
-    public NBPFileSniffer(PostgreSQLJDBC jdbc) {
+    public JsonFileSniffer(PostgreSQLJDBC jdbc) {
         this.mJdbc = jdbc;
     }
 
     private void readFiles() {
-        try (Stream<Path> paths = Files.walk(Paths.get(dirPath))) {
+        try (Stream<Path> paths = Files.walk(Paths.get(DIR_PATH))) {
             paths
                     .filter(Files::isRegularFile)
                     .forEach(this::map2Json);
@@ -37,6 +39,9 @@ public class NBPFileSniffer {
             mJdbc.insertTables(jsonArray);
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (JSONException e1) {
+            // malformed: go to next
+            e1.printStackTrace();
         }
     }
 

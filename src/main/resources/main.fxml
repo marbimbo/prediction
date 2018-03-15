@@ -3,6 +3,7 @@
 <?import com.misinski.ai.ui.DateAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -11,45 +12,59 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@exchange_style.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.misinski.ai.ui.UIController">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0"
+          stylesheets="@exchange_style.css" xmlns="http://javafx.com/javafx/8.0.121"
+          fx:controller="com.misinski.ai.ui.UIController">
     <children>
-        <LineChart fx:id="exchange_chart" layoutX="110.0" layoutY="270.0" legendSide="RIGHT" prefHeight="720.0" prefWidth="1500.0" title="Kursy walut NBP" GridPane.columnIndex="8" GridPane.rowIndex="1">
+        <LineChart fx:id="exchange_chart" layoutX="110.0" layoutY="270.0" legendSide="RIGHT" prefHeight="720.0"
+                   prefWidth="1500.0" title="Kursy walut NBP" GridPane.columnIndex="8" GridPane.rowIndex="1">
             <xAxis>
-                <DateAxis label="Data" side="BOTTOM" />
+                <DateAxis label="Data" side="BOTTOM"/>
             </xAxis>
             <yAxis>
-                <NumberAxis side="LEFT" />
+                <NumberAxis side="LEFT"/>
             </yAxis>
         </LineChart>
         <GridPane GridPane.rowIndex="1">
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="51.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="149.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="51.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="149.0"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
                 <Label alignment="CENTER" text="Wyświetl" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                     <font>
-                        <Font size="15.0" />
+                        <Font size="15.0"/>
                     </font>
                 </Label>
-                <Label text="Od:" GridPane.rowIndex="1" />
-                <DatePicker fx:id="picker_from" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                <Label text="Do:" GridPane.rowIndex="2" />
-                <DatePicker fx:id="picker_to" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <Label alignment="CENTER" text="Predykcja" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                <Label text="Od:" GridPane.rowIndex="1"/>
+                <DatePicker fx:id="picker_from" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label text="Do:" GridPane.rowIndex="2"/>
+                <DatePicker fx:id="picker_to" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Label alignment="CENTER" text="Predykcja" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                       GridPane.rowIndex="3">
                     <font>
-                        <Font size="15.0" />
+                        <Font size="15.0"/>
                     </font>
                 </Label>
-            <ChoiceBox fx:id="prediction_choice" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <ChoiceBox fx:id="prediction_choice" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                <Label alignment="CENTER" text="NBP Web Api" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                       GridPane.rowIndex="5">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <Button fx:id="button_download" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0"
+                        GridPane.halignment="CENTER" prefWidth="150.0" text="Pobierz z NBP" GridPane.columnIndex="1"
+                        GridPane.rowIndex="6"/>
             </children>
         </GridPane>
     </children>

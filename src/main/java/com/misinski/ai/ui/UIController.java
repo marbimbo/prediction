@@ -4,10 +4,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Separator;
@@ -35,6 +38,9 @@ public class UIController implements Initializable {
     private ChoiceBox prediction_choice;
 
     @FXML
+    public Button button_download;
+
+    @FXML
     private LineChart exchange_chart;
 
     @FXML
@@ -53,6 +59,13 @@ public class UIController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldIndex, Number newIndex) {
                 mListener.onPredictionValueChange((String) prediction_choice.getItems().get((Integer) newIndex));
+            }
+        });
+
+        button_download.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mListener.onDownloadClicked();
             }
         });
     }

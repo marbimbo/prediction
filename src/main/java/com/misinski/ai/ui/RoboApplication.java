@@ -2,7 +2,8 @@ package com.misinski.ai.ui;
 
 import com.misinski.ai.db.NbpRow;
 import com.misinski.ai.db.PostgreSQLJDBC;
-import com.misinski.ai.explorer.NBPFileSniffer;
+import com.misinski.ai.explorer.JsonFileSniffer;
+import com.misinski.ai.http.JsonDownloader;
 import com.misinski.ai.prediction.PredictionFitter;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -31,6 +32,7 @@ public class RoboApplication extends Application implements UserActionListener {
     private ArrayList<ObservableList<XYChart.Data<Date, Number>>> mPredictedList = new ArrayList<>();
     private LocalDate mDateFrom = LocalDate.now().minusYears(ONE_YEAR);
     private LocalDate mDateTo = LocalDate.now();
+    private JsonDownloader mDownloader;
 
     public static void main(final String[] arguments) {
         launch(arguments);
@@ -38,10 +40,12 @@ public class RoboApplication extends Application implements UserActionListener {
 
     @Override
     public void init() {
+        mDownloader = new JsonDownloader();
+
         mJdbc = new PostgreSQLJDBC();
         mJdbc.dropTable();
         mJdbc.createTable();
-        NBPFileSniffer sniffer = new NBPFileSniffer(mJdbc);
+        JsonFileSniffer sniffer = new JsonFileSniffer(mJdbc);
         sniffer.sniffForFiles();
 
         mJdbc.produceArray(mDateFrom, mDateTo);
@@ -67,6 +71,8 @@ public class RoboApplication extends Application implements UserActionListener {
         Parent root = loader.load(getClass().getClassLoader().getResource("main.fxml").openStream());
         mController = loader.getController();
         mController.setListener(this);
+
+        mDownloader.downloadJson();
 
         primaryStage.setScene(new Scene(root));
 
@@ -136,6 +142,15 @@ public class RoboApplication extends Application implements UserActionListener {
         System.out.println("onDateToChange");
         mDateTo = value;
         redrawActualValue();
+    }
+
+    @Override
+    public void onDownloadClicked() {
+        try {
+            mDownloader.downloadJson();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void redrawActualValue() {

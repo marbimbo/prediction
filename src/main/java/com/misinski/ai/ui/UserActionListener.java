@@ -9,4 +9,6 @@ public interface UserActionListener {
     void onDateFromChange(LocalDate value);
 
     void onDateToChange(LocalDate value);
+
+    void onDownloadClicked();
 }
