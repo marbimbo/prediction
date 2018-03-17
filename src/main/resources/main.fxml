@@ -38,6 +38,8 @@
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
                 <Label alignment="CENTER" text="Wyświetl" GridPane.columnIndex="1" GridPane.halignment="CENTER">
@@ -63,8 +65,17 @@
                     </font>
                 </Label>
                 <Button fx:id="button_download" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0"
-                        GridPane.halignment="CENTER" prefWidth="150.0" text="Pobierz z NBP" GridPane.columnIndex="1"
+                        prefWidth="150.0" text="Pobierz z NBP" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                         GridPane.rowIndex="6"/>
+                <Button fx:id="button_directory" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0"
+                        prefWidth="150.0" text="Wybierz folder" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                        GridPane.rowIndex="7"/>
+                <Label fx:id="label_directory" alignment="CENTER" maxWidth="Infinity" GridPane.columnIndex="1"
+                       GridPane.halignment="CENTER" GridPane.rowIndex="8">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
             </children>
         </GridPane>
     </children>

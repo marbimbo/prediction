@@ -66,7 +66,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(final Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
         Parent root = loader.load(getClass().getClassLoader().getResource("main.fxml").openStream());
         mController = loader.getController();
@@ -88,7 +88,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
 
         mController.setCallBack();
 
-        recalculatePrediction("Brak");
+//        recalculatePrediction("Brak");
 
         primaryStage.show();
     }

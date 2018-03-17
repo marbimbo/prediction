@@ -8,13 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 
+import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ public class UIController implements Initializable {
 
     private ArrayList<XYChart.Series<Date, Number>> mActualSeriesList = new ArrayList<>();
     private ArrayList<XYChart.Series<Date, Number>> mPredictedSeriesList = new ArrayList<>();
+
+    private DirectoryChooser mDirectoryChooser = new DirectoryChooser();
 
     private UserActionListener mListener;
 
@@ -38,7 +42,13 @@ public class UIController implements Initializable {
     private ChoiceBox prediction_choice;
 
     @FXML
-    public Button button_download;
+    private Button button_download;
+
+    @FXML
+    private Button button_directory;
+
+    @FXML
+    private Label label_directory;
 
     @FXML
     private LineChart exchange_chart;
@@ -66,6 +76,32 @@ public class UIController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 mListener.onDownloadClicked();
+            }
+        });
+
+        label_directory.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label_directory.setMinWidth(Double.POSITIVE_INFINITY);
+            }
+        });
+
+        label_directory.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label_directory.setMinWidth(0);
+            }
+        });
+
+        button_directory.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Window stage = ((Node) event.getSource()).getScene().getWindow();
+                final File selectedDirectory = mDirectoryChooser.showDialog(stage);
+                if (selectedDirectory != null) {
+                    System.out.println(selectedDirectory.getPath());
+                    label_directory.setText(selectedDirectory.getPath());
+                }
             }
         });
     }

@@ -41,10 +41,16 @@ public class JsonDownloader {
         }
         jsonReader.close();
 
-        BufferedWriter jsonWriter = new BufferedWriter(new FileWriter(new File(DIR_PATH + startDate + "--" + endDate)));
-        jsonWriter.write(responseBuffer.toString());
-        jsonWriter.flush();
-        jsonWriter.close();
+        try {
+            BufferedWriter jsonWriter = new BufferedWriter(new FileWriter(new File(DIR_PATH + startDate + "--" + endDate)));
+            jsonWriter.write(responseBuffer.toString());
+            jsonWriter.flush();
+            jsonWriter.close();
+        } catch (java.io.FileNotFoundException e) {
+            // TODO: 15.03.18  
+        } finally {
+
+        }
     }
 
 }
