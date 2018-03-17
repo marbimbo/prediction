@@ -7,14 +7,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 
+import static com.misinski.ai.explorer.JsonFileSniffer.DIR_PATH;
+import static com.misinski.ai.explorer.JsonFileSniffer.EXCHANGE_TABLE;
+
 public class JsonDownloader {
 
     // TODO: 15.03.18 move to WebApi class
     public static final String BASE_URL = "http://api.nbp.pl/api/exchangerates/tables/";
-    public static final String EXCHANGE_TABLE = "a/";
     public static final int DAYS_MAX_RANGE = 93;
-
-    public static final String DIR_PATH = "nbp/" + EXCHANGE_TABLE;
 
     public void downloadJson() throws Exception {
         // TODO: 15.03.18 for a wider range use iterator

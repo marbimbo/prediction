@@ -148,6 +148,11 @@ public class ExchangePredictionApplication extends Application implements UserAc
         }
     }
 
+    @Override
+    public void onDirectorySelected(String value) {
+
+    }
+
     private void redrawActualValue() {
         mJdbc.produceArray(mDateFrom, mDateTo);
         mActualList.get(0).clear();

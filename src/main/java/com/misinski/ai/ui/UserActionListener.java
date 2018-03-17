@@ -11,4 +11,6 @@ public interface UserActionListener {
     void onDateToChange(LocalDate value);
 
     void onDownloadClicked();
+
+    void onDirectorySelected(String value);
 }

@@ -99,7 +99,7 @@ public class UIController implements Initializable {
                 Window stage = ((Node) event.getSource()).getScene().getWindow();
                 final File selectedDirectory = mDirectoryChooser.showDialog(stage);
                 if (selectedDirectory != null) {
-                    System.out.println(selectedDirectory.getPath());
+                    mListener.onDirectorySelected(selectedDirectory.getPath());
                     label_directory.setText(selectedDirectory.getPath());
                 }
             }

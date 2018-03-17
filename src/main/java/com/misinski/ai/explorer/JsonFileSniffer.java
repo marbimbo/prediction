@@ -10,10 +10,12 @@ import java.nio.file.*;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
-import static com.misinski.ai.http.JsonDownloader.DIR_PATH;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 
 public class JsonFileSniffer {
+
+    public static final String EXCHANGE_TABLE = "a/";
+    public static final String DIR_PATH = "nbp/" + EXCHANGE_TABLE;
 
     private WatchService mWatcher;
     private PostgreSQLJDBC mJdbc;
