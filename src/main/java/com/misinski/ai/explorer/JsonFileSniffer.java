@@ -35,14 +35,11 @@ public class JsonFileSniffer {
             e.printStackTrace();
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    startWathing();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        new Thread(() -> {
+            try {
+                startWathing();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
@@ -55,12 +52,7 @@ public class JsonFileSniffer {
                         "Event kind:" + event.kind()
                                 + ". File affected: " + event.context() + ".");
                 readFiles();
-
-                Platform.runLater(
-                        () -> {
-                            mListener.onFileCreated();
-                        }
-                );
+                Platform.runLater(() -> mListener.onFileCreated());
             }
             key.reset();
         }
@@ -128,5 +120,7 @@ public class JsonFileSniffer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        readFiles();
+        mListener.onFileCreated();
     }
 }
