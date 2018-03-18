@@ -35,13 +35,16 @@ public class JsonFileSniffer {
             e.printStackTrace();
         }
 
-        new Thread(() -> {
+
+        Thread watchingThread = new Thread(() -> {
             try {
                 startWathing();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        watchingThread.setDaemon(true);
+        watchingThread.start();
     }
 
     private void startWathing() throws InterruptedException {
