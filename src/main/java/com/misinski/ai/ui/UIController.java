@@ -82,12 +82,6 @@ public class UIController implements Initializable {
                 "tydzień", "miesiąc", "rok")
         );
         prediction_choice.setValue("Brak");
-        prediction_choice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldIndex, Number newIndex) {
-                mListener.onPredictionValueChange((String) prediction_choice.getItems().get((Integer) newIndex));
-            }
-        });
 
         button_download.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -138,6 +132,13 @@ public class UIController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 mListener.onDbDropRequested();
+            }
+        });
+
+        prediction_choice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldIndex, Number newIndex) {
+                mListener.onPredictionValueChange((String) prediction_choice.getItems().get((Integer) newIndex));
             }
         });
     }
@@ -201,7 +202,6 @@ public class UIController implements Initializable {
         picker_from.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
-                System.out.println(picker_from.getValue());
                 mListener.onDateFromChange(picker_from.getValue());
             }
         });
@@ -209,7 +209,6 @@ public class UIController implements Initializable {
         picker_to.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
-                System.out.println(picker_to.getValue());
                 mListener.onDateToChange(picker_to.getValue());
             }
         });

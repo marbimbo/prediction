@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0"
-          stylesheets="@exchange_style.css" xmlns="http://javafx.com/javafx/8.0.121"
+          xmlns="http://javafx.com/javafx/8.0.121"
           fx:controller="com.misinski.ai.ui.UIController">
     <children>
         <LineChart fx:id="exchange_chart" layoutX="110.0" layoutY="270.0" legendSide="RIGHT" prefHeight="720.0"

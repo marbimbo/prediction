@@ -21,8 +21,6 @@ import org.joda.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ExchangePredictionApplication extends Application implements UserActionListener, FileCreatedListener {
 
@@ -33,7 +31,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
     private UIController mController;
     private ArrayList<ObservableList<XYChart.Data<Date, Number>>> mActualList = new ArrayList<>();
     private ArrayList<ObservableList<XYChart.Data<Date, Number>>> mPredictedList = new ArrayList<>();
-    private LocalDate mDateFrom = LocalDate.now().minusYears(ONE_YEAR);
+    private LocalDate mDateFrom = LocalDate.now().minusYears(2 * ONE_YEAR);
     private LocalDate mDateTo = LocalDate.now();
     private JsonDownloader mDownloader;
     private JsonFileSniffer mSniffer;
@@ -50,8 +48,6 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mJdbc.createTable();
         mSniffer = new JsonFileSniffer(mJdbc, this);
         mSniffer.sniffForFiles();
-
-        mJdbc.produceArray(mDateFrom, mDateTo);
 
         mFitter = new PredictionFitter();
 
@@ -79,6 +75,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
 
         primaryStage.setTitle("Kursy walut NBP");
 
+        mJdbc.produceArray(mDateFrom, mDateTo);
         mJdbc.getArrayOfCharts().forEach(this::drawSeries);
 
         mController.setActualData(mActualList);
@@ -90,23 +87,14 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mController.setCallBack();
 
         primaryStage.show();
+        primaryStage.setMaximized(true);
     }
 
-    private double calculateYValue(int k, double[] params) {
+    private double calculateYValue(final int k, final double[] params) {
         return params[0] * k * k + params[1] * k + params[2];
     }
 
-    private Map<Double, Double> map2Double(XYChart.Data<Date, Number> dateNumberData) {
-        Double xValue = Double.valueOf(dateNumberData.getXValue().getTime());
-        System.out.println(xValue);
-        Double yValue = dateNumberData.getYValue().doubleValue();
-        Map map = new HashMap<Double, Double>();
-        map.put(xValue, yValue);
-        return map;
-    }
-
-    private void drawSeries(NbpRow nbpRow) {
-        System.out.println("drawSeries");
+    private void drawSeries(final NbpRow nbpRow) {
         mActualList.get(0).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.eur));
         mActualList.get(1).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.usd));
         mActualList.get(2).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.gbp));
@@ -121,20 +109,19 @@ public class ExchangePredictionApplication extends Application implements UserAc
 
     @Override
     public void onPredictionValueChange(String value) {
-        System.out.println("onPredictionValueChange");
         recalculatePrediction(value);
     }
 
     @Override
     public void onDateFromChange(LocalDate value) {
-        System.out.println("onDateFromChange");
-        mDateFrom = value;
-        redrawActualValue();
+        if (value.isBefore(LocalDate.now())) {
+            mDateFrom = value;
+            redrawActualValue();
+        }
     }
 
     @Override
     public void onDateToChange(LocalDate value) {
-        System.out.println("onDateToChange");
         mDateTo = value;
         redrawActualValue();
     }
@@ -176,9 +163,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mJdbc.getArrayOfCharts().forEach(this::drawSeries);
     }
 
-    private void recalculatePrediction(String value) {
-        String newPrediction = value;
-        System.out.println(newPrediction);
+    private void recalculatePrediction(final String newPrediction) {
         int numberOfPredictedDays;
 
         if (newPrediction.equals("Brak")) {
@@ -199,12 +184,12 @@ public class ExchangePredictionApplication extends Application implements UserAc
 
             int i = 0;
             for (XYChart.Data<Date, Number> data : mActualList.get(arrayIndex)) {
-                xArray[i][0] = data.getXValue().getTime();
+                xArray[i][0] = i;
                 yArray[i] = data.getYValue().doubleValue();
                 ++i;
             }
 
-            double[] params = mFitter.getFunction(xArray, yArray);
+            double[] params = mFitter.getParameters(xArray, yArray);
 
             Date lastDate = java.sql.Date.valueOf(mActualList.get(arrayIndex).get(mActualList.get(arrayIndex).size() - 1).getXValue().toString());
 
@@ -214,7 +199,6 @@ public class ExchangePredictionApplication extends Application implements UserAc
             Date futureDate = java.sql.Date.valueOf(dtPlusOne.toString(fmt));
 
             for (int k = mActualList.get(arrayIndex).size(); k < mActualList.get(arrayIndex).size() + numberOfPredictedDays; ++k) {
-                System.out.println(futureDate);
                 tempList.add(new XYChart.Data<>(futureDate, calculateYValue(k, params)));
                 dtPlusOne = dtPlusOne.plusDays(1);
                 futureDate = java.sql.Date.valueOf(dtPlusOne.toString(fmt));
@@ -227,13 +211,6 @@ public class ExchangePredictionApplication extends Application implements UserAc
 
     @Override
     public void onFileCreated() {
-        System.out.println("onFileCreated");
-        mJdbc.produceArray(mDateFrom, mDateTo);
-        mActualList.get(0).clear();
-        mActualList.get(1).clear();
-        mActualList.get(2).clear();
-        mActualList.get(3).clear();
-        mActualList.get(4).clear();
-        mJdbc.getArrayOfCharts().forEach(this::drawSeries);
+        redrawActualValue();
     }
 }

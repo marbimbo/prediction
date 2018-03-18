@@ -16,6 +16,7 @@ public class PostgreSQLJDBC {
     public static final String DEFAULT_DB_NAME = "exchange";
     private static final String DB_URL = "jdbc:postgresql://localhost/";
     private static final String TABLE_NAME = "prediction";
+    private static final String DB_DRIVER = "org.postgresql.Driver";
     private String mPgUser = DEFAULT_USER;
     private String mPgPassword = DEFAULT_PASSWORD;
     private String mDbName = DEFAULT_DB_NAME;
@@ -24,16 +25,13 @@ public class PostgreSQLJDBC {
 
     public PostgreSQLJDBC() {
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(DB_DRIVER);
             // TODO: 10.03.18 if DB does not exist - create one
             mConn = DriverManager.getConnection(DB_URL + mDbName, mPgUser, mPgPassword);
-
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Opened database successfully");
     }
 
     public void setUser(String user) {
@@ -49,7 +47,6 @@ public class PostgreSQLJDBC {
     }
 
     public void dropTable() {
-        System.out.println("Drop table");
         try {
             Statement dropStatement = mConn.createStatement();
 
@@ -62,7 +59,6 @@ public class PostgreSQLJDBC {
     }
 
     public void createTable() {
-        System.out.println("Create table");
         try {
             Statement createStatement = mConn.createStatement();
 
@@ -82,7 +78,7 @@ public class PostgreSQLJDBC {
         }
     }
 
-    private void consumeCurrencies(JSONObject table) throws SQLException {
+    private void consumeCurrencies(final JSONObject table) throws SQLException {
 
         JSONArray currencyArray = table.getJSONArray("rates");
 
@@ -130,30 +126,30 @@ public class PostgreSQLJDBC {
         return arrayOfCharts;
     }
 
-    private ArrayList<NbpRow> produceArrayFromDB(LocalDate mDateFrom, LocalDate mDateTo) {
+    private ArrayList<NbpRow> produceArrayFromDB(final LocalDate dateFrom, final LocalDate dateTo) {
         ArrayList<NbpRow> dbList = new ArrayList<>();
         PreparedStatement selectStatement = null;
         String sqlStatement = "SELECT * FROM " + TABLE_NAME + " " +
                 "WHERE (effective_date BETWEEN '" +
-                mDateFrom.toString() + "' AND '" + mDateTo.toString() + "')" +
+                dateFrom.toString() + "' AND '" + dateTo.toString() + "')" +
                 "ORDER BY effective_date";
         try {
             mConn = DriverManager.getConnection(DB_URL + mDbName, mPgUser, mPgPassword);
             selectStatement = mConn.prepareStatement(sqlStatement);
-            ResultSet rs = selectStatement.executeQuery();
-            NbpRow p;
-            while (rs.next()) {
-                p = new NbpRow();
-                p.id = rs.getString(1);
-                // or p.id=rs.getInt("userid"); by name of column
-                p.effectiveDate = rs.getDate(2);
-                // or p.name=rs.getString("firstname"); by name of column
-                p.eur = rs.getDouble(3);
-                p.usd = rs.getDouble(4);
-                p.gbp = rs.getDouble(5);
-                p.chf = rs.getDouble(6);
-                p.aud = rs.getDouble(7);
-                dbList.add(p);
+            ResultSet selectedResult = selectStatement.executeQuery();
+            NbpRow selectedRow;
+            while (selectedResult.next()) {
+                selectedRow = new NbpRow();
+                selectedRow.id = selectedResult.getString(1);
+                // or selectedRow.id=selectedResult.getInt("userid"); by name of column
+                selectedRow.effectiveDate = selectedResult.getDate(2);
+                // or selectedRow.name=selectedResult.getString("firstname"); by name of column
+                selectedRow.eur = selectedResult.getDouble(3);
+                selectedRow.usd = selectedResult.getDouble(4);
+                selectedRow.gbp = selectedResult.getDouble(5);
+                selectedRow.chf = selectedResult.getDouble(6);
+                selectedRow.aud = selectedResult.getDouble(7);
+                dbList.add(selectedRow);
             }
             return dbList;
         } catch (SQLException ex) {
@@ -170,8 +166,8 @@ public class PostgreSQLJDBC {
         }
     }
 
-    public void produceArray(LocalDate mDateFrom, LocalDate mDateTo) {
-        arrayOfCharts = produceArrayFromDB(mDateFrom, mDateTo);
+    public void produceArray(final LocalDate dateFrom, final LocalDate dateTo) {
+        arrayOfCharts = produceArrayFromDB(dateFrom, dateTo);
     }
 
     public void close() {

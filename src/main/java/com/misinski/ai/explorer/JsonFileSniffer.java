@@ -50,10 +50,7 @@ public class JsonFileSniffer {
     private void startWathing() throws InterruptedException {
         WatchKey key;
         while ((key = mWatcher.take()) != null) {
-            for (WatchEvent<?> event : key.pollEvents()) {
-                System.out.println(
-                        "Event kind:" + event.kind()
-                                + ". File affected: " + event.context() + ".");
+            for (WatchEvent<?> ignored : key.pollEvents()) {
                 readFiles();
                 Platform.runLater(() -> mListener.onFileCreated());
             }
@@ -62,13 +59,11 @@ public class JsonFileSniffer {
     }
 
     private synchronized void readFiles() {
-        System.out.println("reading");
         try (Stream<Path> stream = Files.list(Paths.get(mDirPath))) {
             stream
                     .filter(new Predicate<Path>() {
                         @Override
                         public boolean test(Path path) {
-                            System.out.println(path);
                             return (path.toString().endsWith(".json"));
                         }
                     })
@@ -79,7 +74,6 @@ public class JsonFileSniffer {
     }
 
     private void map2Json(Path filePath) {
-        System.out.println("matching");
         try {
             String jsonValue = readLineByLineJava8(filePath);
             JSONArray jsonArray = new JSONArray(jsonValue);

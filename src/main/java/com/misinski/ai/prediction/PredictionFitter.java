@@ -6,7 +6,7 @@ import org.orangepalantir.leastsquares.fitters.LinearFitter;
 
 public class PredictionFitter {
 
-    private final Fitter fit;
+    private final Fitter mFit;
 
     public PredictionFitter() {
         Function fun = new Function() {
@@ -30,22 +30,15 @@ public class PredictionFitter {
             }
         };
 
-        fit = new LinearFitter(fun);
+        mFit = new LinearFitter(fun);
     }
 
-    public double[] getFunction(double[][] xs, double[] zs) {
+    public double[] getParameters(double[][] xs, double[] zs) {
+        mFit.setData(xs, zs);
+        mFit.setParameters(new double[]{1, 0, 1});
 
-        // TODO: 14.03.18 better approach
-        xs = new double[xs.length][1];
-        for (int i = 0; i < xs.length; ++i) {
-            xs[i][0] = i;
-        }
+        mFit.fitData();
 
-        fit.setData(xs, zs);
-        fit.setParameters(new double[]{1, 0, 1});
-
-        fit.fitData();
-
-        return fit.getParameters();
+        return mFit.getParameters();
     }
 }

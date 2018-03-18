@@ -7,7 +7,7 @@
     <groupId>com.misinski.ai</groupId>
     <artifactId>prediction</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>Exchange Rate Prediction</name>
 
     <build>
@@ -26,7 +26,6 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.fxml</include>
-                    <include>**/*.css</include>
                 </includes>
             </resource>
         </resources>
