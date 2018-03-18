@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import static com.misinski.ai.db.PostgreSQLJDBC.*;
+
 public class UIController implements Initializable {
 
     private ArrayList<XYChart.Series<Date, Number>> mActualSeriesList = new ArrayList<>();
@@ -49,6 +51,18 @@ public class UIController implements Initializable {
 
     @FXML
     private Label label_directory;
+
+    @FXML
+    private TextField field_user;
+
+    @FXML
+    private TextField field_pass;
+
+    @FXML
+    private TextField field_db;
+
+    @FXML
+    private Button button_db;
 
     @FXML
     private LineChart exchange_chart;
@@ -105,6 +119,17 @@ public class UIController implements Initializable {
             }
         });
         label_directory.setText(System.getProperty("user.dir"));
+
+        field_user.setText(DEFAULT_USER);
+        field_pass.setText(DEFAULT_PASSWORD);
+        field_db.setText(DEFAULT_DB_NAME);
+
+        button_db.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mListener.onDbReconnectRequested(field_user.getText(), field_pass.getText(), field_db.getText());
+            }
+        });
     }
 
     private void initializeSeries() {

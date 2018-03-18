@@ -152,6 +152,14 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mSniffer.setDirectory(value);
     }
 
+    @Override
+    public void onDbReconnectRequested(String user, String pass, String dbName) {
+        mJdbc.setUser(user);
+        mJdbc.setmPassword(pass);
+        mJdbc.setDbName(dbName);
+        mJdbc.reconnect();
+    }
+
     private void redrawActualValue() {
         mJdbc.produceArray(mDateFrom, mDateTo);
         mActualList.get(0).clear();

@@ -5,7 +5,7 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0"
           stylesheets="@exchange_style.css" xmlns="http://javafx.com/javafx/8.0.121"
           fx:controller="com.misinski.ai.ui.UIController">
@@ -25,6 +25,12 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="149.0"/>
             </columnConstraints>
             <rowConstraints>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
@@ -70,6 +76,21 @@
                         <Font size="15.0"/>
                     </font>
                 </Label>
+                <Label alignment="CENTER" text="PostgreSQL" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                       GridPane.rowIndex="10">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </Label>
+                <TextField fx:id="field_user" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+                <TextField fx:id="field_pass" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
+                <TextField fx:id="field_db" GridPane.columnIndex="1" GridPane.rowIndex="13"/>
+                <Label text="User:" GridPane.rowIndex="11"/>
+                <Label text="Pass:" GridPane.rowIndex="12"/>
+                <Label text="DB:" GridPane.rowIndex="13"/>
+                <Button fx:id="button_db" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0"
+                        text="Połącz ponownie" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                        GridPane.rowIndex="14"/>
             </children>
         </GridPane>
     </children>

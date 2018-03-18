@@ -11,12 +11,14 @@ import java.util.logging.Logger;
 
 public class PostgreSQLJDBC {
 
-    private static final String mDbUrl = "jdbc:postgresql://localhost:5432/";
-    private static final String mDbName = "exchange";
-    private static final String mPgUser = "postgres";
-    private static final String mPgPassword = "postgres";
-    private static final String mTableName = "prediction";
-
+    public static final String DEFAULT_USER = "postgres";
+    public static final String DEFAULT_PASSWORD = "postgres";
+    public static final String DEFAULT_DB_NAME = "exchange";
+    private static final String DB_URL = "jdbc:postgresql://localhost/";
+    private static final String TABLE_NAME = "prediction";
+    private String mPgUser = DEFAULT_USER;
+    private String mPgPassword = DEFAULT_PASSWORD;
+    private String mDbName = DEFAULT_DB_NAME;
     private Connection mConn;
     private ArrayList<NbpRow> arrayOfCharts;
 
@@ -24,7 +26,7 @@ public class PostgreSQLJDBC {
         try {
             Class.forName("org.postgresql.Driver");
             // TODO: 10.03.18 if DB does not exist - create one
-            mConn = DriverManager.getConnection(mDbUrl + mDbName, mPgUser, mPgPassword);
+            mConn = DriverManager.getConnection(DB_URL + mDbName, mPgUser, mPgPassword);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,12 +36,24 @@ public class PostgreSQLJDBC {
         System.out.println("Opened database successfully");
     }
 
+    public void setUser(String user) {
+        this.mPgUser = user;
+    }
+
+    public void setmPassword(String pass) {
+        this.mPgPassword = pass;
+    }
+
+    public void setDbName(String dbName) {
+        this.mDbName = dbName;
+    }
+
     public void dropTable() {
         System.out.println("Drop table");
         try {
             Statement stmt = mConn.createStatement();
 
-            String sql = "DROP TABLE " + mTableName;
+            String sql = "DROP TABLE " + TABLE_NAME;
 
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
@@ -52,7 +66,7 @@ public class PostgreSQLJDBC {
         try {
             Statement stmt = mConn.createStatement();
 
-            String sql = "CREATE TABLE " + mTableName + " " +
+            String sql = "CREATE TABLE " + TABLE_NAME + " " +
                     "(id CHAR(14) not NULL, " +
                     " effective_date DATE, " +
                     " eur FLOAT, " +
@@ -72,7 +86,7 @@ public class PostgreSQLJDBC {
 
         JSONArray currencyArray = table.getJSONArray("rates");
 
-        String sql = "INSERT INTO " + mTableName + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + TABLE_NAME + " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement statement = mConn.prepareStatement(sql);
 
@@ -116,11 +130,11 @@ public class PostgreSQLJDBC {
     private ArrayList<NbpRow> produceArrayFromDB(LocalDate mDateFrom, LocalDate mDateTo) {
         ArrayList<NbpRow> dbList = new ArrayList<>();
         PreparedStatement ps = null;
-        String SQL = "SELECT * FROM " + mTableName + " " +
+        String SQL = "SELECT * FROM " + TABLE_NAME + " " +
                 "WHERE (effective_date BETWEEN '" + mDateFrom.toString() + "' AND '" + mDateTo.toString() + "')" +
                 "ORDER BY effective_date";
         try {
-            mConn = DriverManager.getConnection(mDbUrl + mDbName, mPgUser, mPgPassword);
+            mConn = DriverManager.getConnection(DB_URL + mDbName, mPgUser, mPgPassword);
             ps = mConn.prepareStatement(SQL);
             ResultSet rs = ps.executeQuery();
             NbpRow p = null;
@@ -164,6 +178,22 @@ public class PostgreSQLJDBC {
             } catch (SQLException ex) {
                 Logger.getLogger(PostgreSQLJDBC.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+
+    public void reconnect() {
+        if (mConn != null) {
+            try {
+                mConn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try {
+            mConn = DriverManager.getConnection(DB_URL + mDbName, mPgUser, mPgPassword);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // TODO: 18.03.18 baza danych nie istnieje
         }
     }
 }

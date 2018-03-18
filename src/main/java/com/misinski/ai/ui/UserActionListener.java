@@ -13,4 +13,6 @@ public interface UserActionListener {
     void onDownloadClicked();
 
     void onDirectorySelected(String value);
+
+    void onDbReconnectRequested(String user, String pass, String dbName);
 }
