@@ -45,7 +45,6 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mDownloader = new JsonDownloader();
 
         mJdbc = new PostgreSQLJDBC();
-        mJdbc.dropTable();
         mJdbc.createTable();
         mSniffer = new JsonFileSniffer(mJdbc, this);
         mSniffer.sniffForFiles();
@@ -158,6 +157,11 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mJdbc.setmPassword(pass);
         mJdbc.setDbName(dbName);
         mJdbc.reconnect();
+    }
+
+    @Override
+    public void onDbDropRequested() {
+        mJdbc.dropTable();
     }
 
     private void redrawActualValue() {

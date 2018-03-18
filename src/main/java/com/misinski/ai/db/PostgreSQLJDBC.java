@@ -51,11 +51,11 @@ public class PostgreSQLJDBC {
     public void dropTable() {
         System.out.println("Drop table");
         try {
-            Statement stmt = mConn.createStatement();
+            Statement dropStatement = mConn.createStatement();
 
-            String sql = "DROP TABLE " + TABLE_NAME;
+            String sqlStatement = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-            stmt.executeUpdate(sql);
+            dropStatement.executeUpdate(sqlStatement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,9 +64,9 @@ public class PostgreSQLJDBC {
     public void createTable() {
         System.out.println("Create table");
         try {
-            Statement stmt = mConn.createStatement();
+            Statement createStatement = mConn.createStatement();
 
-            String sql = "CREATE TABLE " + TABLE_NAME + " " +
+            String sqlStatement = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " " +
                     "(id CHAR(14) not NULL, " +
                     " effective_date DATE, " +
                     " eur FLOAT, " +
@@ -76,7 +76,7 @@ public class PostgreSQLJDBC {
                     " aud FLOAT, " +
                     " PRIMARY KEY ( id ))";
 
-            stmt.executeUpdate(sql);
+            createStatement.executeUpdate(sqlStatement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -86,12 +86,15 @@ public class PostgreSQLJDBC {
 
         JSONArray currencyArray = table.getJSONArray("rates");
 
-        String sql = "INSERT INTO " + TABLE_NAME + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlStatement = "INSERT INTO " +
+                TABLE_NAME +
+                " VALUES (?, ?, ?, ?, ?, ?, ?)" +
+                " ON CONFLICT DO NOTHING ";
 
-        PreparedStatement statement = mConn.prepareStatement(sql);
+        PreparedStatement insertStatement = mConn.prepareStatement(sqlStatement);
 
-        statement.setString(1, table.getString("no"));
-        statement.setDate(2, Date.valueOf(table.getString("effectiveDate")));
+        insertStatement.setString(1, table.getString("no"));
+        insertStatement.setDate(2, Date.valueOf(table.getString("effectiveDate")));
 
         double eurRate = 0, usdRate = 0, gbpRate = 0, chfRate = 0, audRate = 0;
 
@@ -109,12 +112,12 @@ public class PostgreSQLJDBC {
             }
         }
 
-        statement.setDouble(3, eurRate);
-        statement.setDouble(4, usdRate);
-        statement.setDouble(5, gbpRate);
-        statement.setDouble(6, chfRate);
-        statement.setDouble(7, audRate);
-        statement.executeUpdate();
+        insertStatement.setDouble(3, eurRate);
+        insertStatement.setDouble(4, usdRate);
+        insertStatement.setDouble(5, gbpRate);
+        insertStatement.setDouble(6, chfRate);
+        insertStatement.setDouble(7, audRate);
+        insertStatement.executeUpdate();
     }
 
     public void insertTables(JSONArray jsonArray) throws SQLException {
@@ -129,15 +132,16 @@ public class PostgreSQLJDBC {
 
     private ArrayList<NbpRow> produceArrayFromDB(LocalDate mDateFrom, LocalDate mDateTo) {
         ArrayList<NbpRow> dbList = new ArrayList<>();
-        PreparedStatement ps = null;
-        String SQL = "SELECT * FROM " + TABLE_NAME + " " +
-                "WHERE (effective_date BETWEEN '" + mDateFrom.toString() + "' AND '" + mDateTo.toString() + "')" +
+        PreparedStatement selectStatement = null;
+        String sqlStatement = "SELECT * FROM " + TABLE_NAME + " " +
+                "WHERE (effective_date BETWEEN '" +
+                mDateFrom.toString() + "' AND '" + mDateTo.toString() + "')" +
                 "ORDER BY effective_date";
         try {
             mConn = DriverManager.getConnection(DB_URL + mDbName, mPgUser, mPgPassword);
-            ps = mConn.prepareStatement(SQL);
-            ResultSet rs = ps.executeQuery();
-            NbpRow p = null;
+            selectStatement = mConn.prepareStatement(sqlStatement);
+            ResultSet rs = selectStatement.executeQuery();
+            NbpRow p;
             while (rs.next()) {
                 p = new NbpRow();
                 p.id = rs.getString(1);
@@ -156,9 +160,9 @@ public class PostgreSQLJDBC {
             Logger.getLogger(PostgreSQLJDBC.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         } finally {
-            if (ps != null) {
+            if (selectStatement != null) {
                 try {
-                    ps.close();
+                    selectStatement.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(PostgreSQLJDBC.class.getName()).log(Level.SEVERE, null, ex);
                 }

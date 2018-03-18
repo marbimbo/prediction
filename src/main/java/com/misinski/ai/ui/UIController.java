@@ -62,7 +62,10 @@ public class UIController implements Initializable {
     private TextField field_db;
 
     @FXML
-    private Button button_db;
+    private Button button_db_reconnect;
+
+    @FXML
+    private Button button_db_drop;
 
     @FXML
     private LineChart exchange_chart;
@@ -124,10 +127,17 @@ public class UIController implements Initializable {
         field_pass.setText(DEFAULT_PASSWORD);
         field_db.setText(DEFAULT_DB_NAME);
 
-        button_db.setOnAction(new EventHandler<ActionEvent>() {
+        button_db_reconnect.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 mListener.onDbReconnectRequested(field_user.getText(), field_pass.getText(), field_db.getText());
+            }
+        });
+
+        button_db_drop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mListener.onDbDropRequested();
             }
         });
     }

@@ -40,6 +40,7 @@
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
                 <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
                 <Label alignment="CENTER" text="Wyświetl" GridPane.columnIndex="1" GridPane.halignment="CENTER">
@@ -88,9 +89,14 @@
                 <Label text="User:" GridPane.rowIndex="11"/>
                 <Label text="Pass:" GridPane.rowIndex="12"/>
                 <Label text="DB:" GridPane.rowIndex="13"/>
-                <Button fx:id="button_db" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0"
+                <Button fx:id="button_db_reconnect" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0"
+                        prefWidth="150.0"
                         text="Połącz ponownie" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                         GridPane.rowIndex="14"/>
+                <Button fx:id="button_db_drop" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0"
+                        prefWidth="150.0"
+                        text="Usuń tabelę" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                        GridPane.rowIndex="15"/>
             </children>
         </GridPane>
     </children>

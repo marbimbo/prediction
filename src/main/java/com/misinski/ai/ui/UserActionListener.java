@@ -15,4 +15,6 @@ public interface UserActionListener {
     void onDirectorySelected(String value);
 
     void onDbReconnectRequested(String user, String pass, String dbName);
+
+    void onDbDropRequested();
 }
