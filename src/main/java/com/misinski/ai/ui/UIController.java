@@ -219,11 +219,11 @@ public class UIController implements Initializable {
         mListener = listener;
     }
 
-    public void setDateFrom(LocalDate dateFrom) {
+    void setDateFrom(LocalDate dateFrom) {
         picker_from.setValue(dateFrom);
     }
 
-    public void setDateTo(LocalDate dateTo) {
+    void setDateTo(LocalDate dateTo) {
         picker_to.setValue(dateTo);
     }
 }

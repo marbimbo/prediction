@@ -15,6 +15,8 @@ import javafx.scene.Scene;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -203,20 +205,19 @@ public class ExchangePredictionApplication extends Application implements UserAc
             }
 
             double[] params = mFitter.getFunction(xArray, yArray);
-            for (int j = 0; j < params.length; ++j) {
-                System.out.println(params[j]);
-            }
 
-            Date lastDate = mActualList.get(arrayIndex).get(mActualList.get(arrayIndex).size() - 1).getXValue();
+            Date lastDate = java.sql.Date.valueOf(mActualList.get(arrayIndex).get(mActualList.get(arrayIndex).size() - 1).getXValue().toString());
 
             DateTime dtOrg = new DateTime(lastDate);
             DateTime dtPlusOne = dtOrg.plusDays(1);
-            Date futureDate = dtPlusOne.toDate();
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd");
+            Date futureDate = java.sql.Date.valueOf(dtPlusOne.toString(fmt));
 
             for (int k = mActualList.get(arrayIndex).size(); k < mActualList.get(arrayIndex).size() + numberOfPredictedDays; ++k) {
+                System.out.println(futureDate);
                 tempList.add(new XYChart.Data<>(futureDate, calculateYValue(k, params)));
                 dtPlusOne = dtPlusOne.plusDays(1);
-                futureDate = dtPlusOne.toDate();
+                futureDate = java.sql.Date.valueOf(dtPlusOne.toString(fmt));
             }
 
             mPredictedList.get(arrayIndex).clear();
