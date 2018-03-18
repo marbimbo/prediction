@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 
-import static com.misinski.ai.explorer.JsonFileSniffer.DIR_PATH;
 import static com.misinski.ai.explorer.JsonFileSniffer.EXCHANGE_TABLE;
 
 public class JsonDownloader {
@@ -16,7 +15,7 @@ public class JsonDownloader {
     public static final String BASE_URL = "http://api.nbp.pl/api/exchangerates/tables/";
     public static final int DAYS_MAX_RANGE = 93;
 
-    public void downloadJson() throws Exception {
+    public void downloadJson(String path) throws Exception {
         // TODO: 15.03.18 for a wider range use iterator
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = endDate.minusDays(DAYS_MAX_RANGE);
@@ -42,7 +41,7 @@ public class JsonDownloader {
         jsonReader.close();
 
         try {
-            BufferedWriter jsonWriter = new BufferedWriter(new FileWriter(new File(DIR_PATH + startDate + "--" + endDate)));
+            BufferedWriter jsonWriter = new BufferedWriter(new FileWriter(new File(path + "/" + startDate + "--" + endDate + ".json")));
             jsonWriter.write(responseBuffer.toString());
             jsonWriter.flush();
             jsonWriter.close();

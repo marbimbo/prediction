@@ -104,6 +104,7 @@ public class UIController implements Initializable {
                 }
             }
         });
+        label_directory.setText(System.getProperty("user.dir"));
     }
 
     private void initializeSeries() {

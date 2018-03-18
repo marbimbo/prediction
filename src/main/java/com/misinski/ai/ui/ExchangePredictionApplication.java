@@ -2,6 +2,7 @@ package com.misinski.ai.ui;
 
 import com.misinski.ai.db.NbpRow;
 import com.misinski.ai.db.PostgreSQLJDBC;
+import com.misinski.ai.explorer.FileCreatedListener;
 import com.misinski.ai.explorer.JsonFileSniffer;
 import com.misinski.ai.http.JsonDownloader;
 import com.misinski.ai.prediction.PredictionFitter;
@@ -21,7 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExchangePredictionApplication extends Application implements UserActionListener {
+public class ExchangePredictionApplication extends Application implements UserActionListener, FileCreatedListener {
 
     private static final int ONE_YEAR = 1;
 
@@ -33,6 +34,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
     private LocalDate mDateFrom = LocalDate.now().minusYears(ONE_YEAR);
     private LocalDate mDateTo = LocalDate.now();
     private JsonDownloader mDownloader;
+    private JsonFileSniffer mSniffer;
 
     public static void main(final String[] arguments) {
         launch(arguments);
@@ -45,8 +47,8 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mJdbc = new PostgreSQLJDBC();
         mJdbc.dropTable();
         mJdbc.createTable();
-        JsonFileSniffer sniffer = new JsonFileSniffer(mJdbc);
-        sniffer.sniffForFiles();
+        mSniffer = new JsonFileSniffer(mJdbc, this);
+        mSniffer.sniffForFiles();
 
         mJdbc.produceArray(mDateFrom, mDateTo);
 
@@ -72,8 +74,6 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mController = loader.getController();
         mController.setListener(this);
 
-        mDownloader.downloadJson();
-
         primaryStage.setScene(new Scene(root));
 
         primaryStage.setTitle("Kursy walut NBP");
@@ -87,8 +87,6 @@ public class ExchangePredictionApplication extends Application implements UserAc
         mController.setDateTo(mDateTo);
 
         mController.setCallBack();
-
-//        recalculatePrediction("Brak");
 
         primaryStage.show();
     }
@@ -107,6 +105,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
     }
 
     private void drawSeries(NbpRow nbpRow) {
+        System.out.println("drawSeries");
         mActualList.get(0).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.eur));
         mActualList.get(1).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.usd));
         mActualList.get(2).add(new XYChart.Data<>(nbpRow.effectiveDate, nbpRow.gbp));
@@ -142,7 +141,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
     @Override
     public void onDownloadClicked() {
         try {
-            mDownloader.downloadJson();
+            mDownloader.downloadJson(mSniffer.getDirPath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,7 +149,7 @@ public class ExchangePredictionApplication extends Application implements UserAc
 
     @Override
     public void onDirectorySelected(String value) {
-
+        mSniffer.setDirectory(value);
     }
 
     private void redrawActualValue() {
@@ -211,5 +210,17 @@ public class ExchangePredictionApplication extends Application implements UserAc
             mPredictedList.get(arrayIndex).clear();
             mPredictedList.get(arrayIndex).addAll(tempList);
         }
+    }
+
+    @Override
+    public void onFileCreated() {
+        System.out.println("onFileCreated");
+        mJdbc.produceArray(mDateFrom, mDateTo);
+        mActualList.get(0).clear();
+        mActualList.get(1).clear();
+        mActualList.get(2).clear();
+        mActualList.get(3).clear();
+        mActualList.get(4).clear();
+        mJdbc.getArrayOfCharts().forEach(this::drawSeries);
     }
 }

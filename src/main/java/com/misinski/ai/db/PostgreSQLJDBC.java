@@ -104,9 +104,7 @@ public class PostgreSQLJDBC {
     }
 
     public void insertTables(JSONArray jsonArray) throws SQLException {
-        System.out.println(jsonArray.length());
         for (int i = 0; i < jsonArray.length(); ++i) {
-            System.out.println(jsonArray.getJSONObject(i));
             consumeCurrencies(jsonArray.getJSONObject(i));
         }
     }
