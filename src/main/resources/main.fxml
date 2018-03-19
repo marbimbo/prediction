@@ -13,7 +13,7 @@
         <LineChart fx:id="exchange_chart" layoutX="110.0" layoutY="270.0" legendSide="RIGHT" prefHeight="720.0"
                    prefWidth="1500.0" title="Kursy walut NBP" GridPane.columnIndex="8" GridPane.rowIndex="1">
             <xAxis>
-                <DateAxis label="Data" side="BOTTOM"/>
+                <DateAxis animated="false" label="Data" side="BOTTOM"/>
             </xAxis>
             <yAxis>
                 <NumberAxis side="LEFT"/>
