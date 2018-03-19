@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="1080.0" prefWidth="1920.0"
-          xmlns="http://javafx.com/javafx/8.0.121"
+          stylesheets="@exchange_style.css" xmlns="http://javafx.com/javafx/8.0.121"
           fx:controller="com.misinski.ai.ui.UIController">
     <children>
         <LineChart fx:id="exchange_chart" layoutX="110.0" layoutY="270.0" legendSide="RIGHT" prefHeight="720.0"
@@ -90,12 +90,10 @@
                 <Label text="Pass:" GridPane.rowIndex="12"/>
                 <Label text="DB:" GridPane.rowIndex="13"/>
                 <Button fx:id="button_db_reconnect" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0"
-                        prefWidth="150.0"
-                        text="Połącz ponownie" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                        prefWidth="150.0" text="Połącz ponownie" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                         GridPane.rowIndex="14"/>
                 <Button fx:id="button_db_drop" alignment="CENTER" mnemonicParsing="false" prefHeight="26.0"
-                        prefWidth="150.0"
-                        text="Usuń tabelę" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                        prefWidth="150.0" text="Usuń tabelę" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                         GridPane.rowIndex="15"/>
             </children>
         </GridPane>
